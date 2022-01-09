@@ -54,6 +54,8 @@ public class NGrams {
         }
         return result;
     }
+
+
     public static String fileToString(String title) throws IOException {
 
         String everything;

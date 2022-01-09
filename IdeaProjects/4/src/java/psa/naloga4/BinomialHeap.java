@@ -12,33 +12,33 @@ public class BinomialHeap {
 	}
 	
 	public boolean insert(int key){
-		BinomialNode noud = new BinomialNode(key);
+		BinomialNode node = new BinomialNode(key);
 		BinomialNode looper = data[0];
-		int coun = 0;
-		while (looper!=null && coun<data.length){
-			noud=merge(noud,looper);
-			data[coun]=null;
-			coun+=1;
-			if(coun!=data.length) {
-			looper=data[coun];
+		int counter = 0;
+		while (looper!=null && counter<data.length){
+			node=merge(node,looper);
+			data[counter]=null;
+			counter+=1;
+			if(counter!=data.length) {
+			looper=data[counter];
 		}
 		}
-		if (coun==data.length){
+		if (counter==data.length){
 			this.resizeArray();
-			data[data.length/2]=noud;
+			data[data.length/2]=node;
 			data[data.length/2-1]=null;
 			return true;
 		}
 		else {
-			if (coun>0){
-			data[coun]=noud;
-			data[coun-1]=null;
+			if (counter>0){
+			data[counter]=node;
+			data[counter-1]=null;
 			return true;
 			}
 		
 		
 			else{
-				data[coun]=noud;
+				data[counter]=node;
 				return true;
 			}
 		}
@@ -78,22 +78,22 @@ public class BinomialHeap {
 				else {
 					children = new BinomialNode[k];
 					for(int z=0;z<k;z++) {
-						children[z]=data[k].childs.get(z);
+						children[z]=data[k].children.get(z);
 						
 					}
 					small=true;
 					data[k]=null;
 					for(int r=0;r<k;r++) {
 						int q=r;
-						BinomialNode noud  = children[children.length-1-r];
+						BinomialNode node  = children[children.length-1-r];
 						BinomialNode looper= data[q];
 						while(looper!=null) {
-							noud =merge(noud,data[q]);
+							node =merge(node,data[q]);
 							data[q]=null;
 							q+=1;
 							looper=data[q];
 						}
-						data[q]=noud;
+						data[q]=node;
 					}
 						return true;
 					
@@ -129,10 +129,10 @@ public class BinomialHeap {
 	
 	private BinomialNode merge(BinomialNode t1, BinomialNode t2) {
 		if(t1.getKey()<t2.getKey()) {
-			t1.childs.add(0, t2);
+			t1.children.add(0, t2);
 			return t1;
 		}
-		t2.childs.add(0, t1);
+		t2.children.add(0, t1);
 		return t2;
 	}
 }

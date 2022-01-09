@@ -1,5 +1,6 @@
 
 import java.io.*;
+import java.text.DecimalFormat;
 import java.util.*;
 
 public class NGram {
@@ -59,12 +60,13 @@ public static HashMap<String,Integer> ngrams(int n, String str){
         for (String i: text.keySet()) {
             if (i.charAt(0) == A) {
                 sum += text.get(i);
-                System.out.println("Printing sum: "+sum);
+
             }
         }
-        System.out.println("Printing get(B): " + text.get(B));
+        System.out.println("Printing num of ngrams starting with '"+A+"': "+sum);
+        System.out.println("Printing num of \""+B+"\": " + text.get(B));
         if(sum != 0 && text.get(B)!=null) {
-            result = (double)text.get(B) / (double) sum;
+            result = Math.round((((double)text.get(B) / (double) sum) * 100.0)*100.0)/100.0;
         }
         else result = 0;
         return result;
@@ -97,15 +99,41 @@ public static HashMap<String,Integer> ngrams(int n, String str){
             System.out.println(key + " " + value);
         }
     }
+
+
+    public static HashMap<String, Integer> sortByValue(HashMap<String, Integer> hm)
+    {
+        // Create a list from elements of HashMap
+        List<Map.Entry<String, Integer> > list
+                = new LinkedList<Map.Entry<String, Integer> >(
+                hm.entrySet());
+
+        // Sort the list using lambda expression
+        Collections.sort(
+                list,
+                (i1,
+                 i2) -> i1.getValue().compareTo(i2.getValue()));
+
+        // put data from sorted list to hashmap
+        HashMap<String, Integer> temp
+                = new LinkedHashMap<String, Integer>();
+        for (Map.Entry<String, Integer> aa : list) {
+            temp.put(aa.getKey(), aa.getValue());
+        }
+        return temp;
+    }
+
     public static void main(String[] args) throws Exception {
 
-        System.out.println("Insert n: ");
-        int n = sc.nextInt();
-
-        String str = "Ja nisam odavde. Prodajem dusu vragu svome. Poderao sam jaknu. Prava hrana je ukusna. Prodajem dusu vragu Prodajem dusu vragu";
+        System.out.println("Insert n-gram for which you want to check the frequency: ");
+        String B = sc.nextLine();
+        System.out.println("Insert character for which you want to check frequency of \""+B+ "\" coming after it:");
+        char A = sc.next().charAt(0);
+        int n = B.split(" ").length;
+        String str = fileToString("10MB.txt");
         text = ngrams(n,str);
-        printMap(text);
-        System.out.println(frequency(text, "dusu vragu", 'P'));
+        printMap(sortByValue(text));
+        System.out.println("The real chance of having \""+B+"\" after '"+A+ "' is: " +frequency(text, B, A)+"%");
         sc.close();
 
     }

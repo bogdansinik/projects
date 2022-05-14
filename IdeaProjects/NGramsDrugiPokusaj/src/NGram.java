@@ -58,13 +58,19 @@ public static HashMap<String,Integer> ngrams(int n, String str){
         double result;
         int sum = 0;
         for (String i: text.keySet()) {
-            if (i.charAt(0) == A) {
+
+
+            if (!i.isEmpty() && i.charAt(0) == A) {
                 sum += text.get(i);
 
             }
         }
         System.out.println("Printing num of ngrams starting with '"+A+"': "+sum);
-        System.out.println("Printing num of \""+B+"\": " + text.get(B));
+        if(text.get(B) == null){
+            System.out.println("Printing num of \""+B+"\": 0");
+        }else {
+            System.out.println("Printing num of \"" + B + "\": " + text.get(B));
+        }
         if(sum != 0 && text.get(B)!=null) {
             result = Math.round((((double)text.get(B) / (double) sum) * 100.0)*100.0)/100.0;
         }
@@ -122,6 +128,9 @@ public static HashMap<String,Integer> ngrams(int n, String str){
         }
         return temp;
     }
+
+
+
 
     public static void main(String[] args) throws Exception {
 

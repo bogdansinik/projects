@@ -1,22 +1,43 @@
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
+import java.io.IOException;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class ParallelNGrams {
-    public static  ArrayList<ArrayList<String>> getChunks(String text, int parallel, int NgramSize){
-        String[] arrOfText =text.split(" ");
-        int n = arrOfText.length;
-
+    public static  ArrayList<ArrayList<String>> getChunks(ArrayList<String> text, int parallel, int NgramSize){
+        //String[] arrOfText =text.split(" ");
+        //int n = arrOfText.length;
+        //ArrayList<String> tmp = text;
+        int length = 0;
+        for(String str: text){
+            String [] tmp = str.split(" ");
+            length += tmp.length;
+        }
+        int n = text.size();
         int numOfChunks = (int) Math.ceil((double) n/parallel);
+        int totalStrings = 0;
         ArrayList<ArrayList<String>> chunks = new ArrayList<ArrayList<String>>(numOfChunks);
-        for (int i=0; i<parallel; i++){
-            if(i!=numOfChunks-1) {
-                chunks.add(new ArrayList<String>(Arrays.asList(Arrays.copyOfRange(arrOfText, i * numOfChunks, Math.min(i * numOfChunks + numOfChunks + NgramSize - 1, arrOfText.length-1)))));
-            }else {
-                chunks.add(new ArrayList<String>(Arrays.asList(Arrays.copyOfRange(arrOfText, i * numOfChunks, Math.min(i * numOfChunks + numOfChunks, arrOfText.length-1)))));
+        for (int i=0; i<parallel; i++) {
+            if (i != numOfChunks - 1) {
+                //try {
+                    //chunks.add(new ArrayList<String>(Arrays.asList(Arrays.copyOfRange(arrOfText, i * numOfChunks, Math.min(i * numOfChunks + numOfChunks + NgramSize - 1, arrOfText.length-1)))));
+                   List<String> tmp = text.subList(i * numOfChunks, Math.min(i * numOfChunks + numOfChunks, text.size()));
+                   totalStrings += tmp.size();
+
+                   chunks.add(new ArrayList<>(tmp));
+                    //chunks.add((ArrayList<String>) text.subList(i * numOfChunks, Math.min(i * numOfChunks + numOfChunks + NgramSize, text.size())));
+                //} catch (IndexOutOfBoundsException e) {
+                //}
+            } else {
+                //try {
+                    //chunks.add(new ArrayList<String>(Arrays.asList(Arrays.copyOfRange(arrOfText, i * numOfChunks, Math.min(i * numOfChunks + numOfChunks, arrOfText.length-1)))));
+                    List<String> tmp = text.subList(i * numOfChunks, Math.min(i * numOfChunks + numOfChunks, text.size()));
+                    chunks.add(new ArrayList<>(tmp));
+                    //chunks.add((ArrayList<String>) text.subList(i * numOfChunks, Math.min(i * numOfChunks + numOfChunks, text.size())));
+                //} catch (IndexOutOfBoundsException e) {
+                }
             }
-            }
+        //}
+        System.out.println(totalStrings);
         return chunks;
     }
 
@@ -41,6 +62,7 @@ public class ParallelNGrams {
         PartialGrams[] tasks = new PartialGrams[parallel];
         Thread[] threads = new Thread[parallel];
         HashMap<String,Integer> res;
+        System.out.println("BROJ CHUNKOVA: "+chunks.size()+" A BROJ PROCESORA: "+parallel);
         for (int i=0; i<parallel; i++){
             tasks[i] = new PartialGrams(chunks.get(i),n);
             threads[i] = new Thread(tasks[i]);
@@ -59,15 +81,37 @@ public class ParallelNGrams {
         res = joinHashMaps(temp);
         return res;
     }
+    private static Scanner sc = new Scanner(System.in);
+    public static void main(String[] args) throws IOException {
+        //String str1 = String.valueOf(NGram.fileToString("10MB.txt"));
+        //String str =  (str1.toLowerCase(Locale.ROOT)).replaceAll("\\p{Punct}","");
+        System.out.println("Insert n-gram for which you want to check the frequency: ");
+        String B = sc.nextLine();
+        System.out.println("Insert character for which you want to check frequency of \"" + B + "\" coming after it:");
+        char A = sc.next().charAt(0);
+        int n = B.split(" ").length;
+
+        long startTimePar = System.currentTimeMillis();
+        ArrayList<String> str = (ArrayList<String>) NGram.fileToString("10MB.txt");
+
+
+        int cores = Runtime.getRuntime().availableProcessors();
+        ArrayList<ArrayList<String>> chunks = ParallelNGrams.getChunks(str, cores, n);
+        HashMap<String, Integer> res = ParallelNGrams.getNGrams(chunks, cores, n);
+        System.out.println("The real chance of having \"" + B + "\" after '" + A + "' is: " + NGram.frequency(res, B, A) + "%");
+        long stopTimePar = System.currentTimeMillis();
+        System.out.println("PAR: " + (stopTimePar - startTimePar));
+        sc.close();
+    }
 }
 
 
 class PartialGrams implements Runnable{
-    String A;
+    ArrayList<String> A;
     int n;
     HashMap<String, Integer> output;
     public PartialGrams(ArrayList<String> chunk, int n){
-        this.A=String.join(" ", chunk);
+        this.A= chunk;
         this.n = n;
     }
     @Override

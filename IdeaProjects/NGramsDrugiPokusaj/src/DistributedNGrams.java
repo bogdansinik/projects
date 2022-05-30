@@ -30,12 +30,12 @@ public class DistributedNGrams {
     }
 
     public static void main(String[] args) throws IOException {
-
+        long startTimeDis = System.currentTimeMillis();
         //System.out.println("Insert n-gram for which you want to check the frequency: ");
-        String B = "lorem ipsum";
-        //System.out.println("Insert character for which you want to check frequency of \""+B+ "\" coming after it:");
+        int n = 2;
+        //String B = "Lorem ipsum dolor sit";
+        String B  = "lorem ipsum";
         char A = 'l';
-        int n = B.split(" ").length;
 
         MPI.Init(args);
         int me = MPI.COMM_WORLD.Rank();
@@ -45,7 +45,7 @@ public class DistributedNGrams {
         if (me == 0) {
             //String str1 = String.valueOf(NGram.fileToString("../10MB.txt"));
             //String str =  (str1.toLowerCase(Locale.ROOT)).replaceAll("\\p{Punct}","");
-            ArrayList<String> str = (ArrayList<String>) NGram.fileToString("../175MB.txt");
+            ArrayList<String> str = (ArrayList<String>) NGram.fileToString("../100MB.txt");
             ArrayList<ArrayList<String>> chunks = ParallelNGrams.getChunks(str, size - 1, n);
 
             for (int i = 1; i < size; i++) {
@@ -80,6 +80,8 @@ public class DistributedNGrams {
             System.out.println("Total num of " + B + " is: " + numOfB);
             System.out.println("Freq: " + Math.round((((double) numOfB / (double) sum) * 100.0) * 100.0) / 100.0 + "%");
             //System.out.println("The real chance of having \""+B+"\" after '"+A+ "' is: " +frequency(ngrams, B, A)+"%");
+            long stopTimeDis = System.currentTimeMillis();
+            System.out.println("DIS: " + (stopTimeDis - startTimeDis));
         } else {
             mpi.Status status = MPI.COMM_WORLD.Probe(0, 99);
             char[] chunk = new char[status.count];
@@ -125,5 +127,7 @@ public class DistributedNGrams {
             MPI.COMM_WORLD.Send(sum, 0, 1, MPI.INT, 0, 97);
             }catch(Exception e){}
         }
+
     }
+
 }

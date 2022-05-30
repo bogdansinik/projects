@@ -37,7 +37,7 @@ public class ParallelNGrams {
                 }
             }
         //}
-        System.out.println(totalStrings);
+        //System.out.println(totalStrings);
         return chunks;
     }
 
@@ -62,7 +62,7 @@ public class ParallelNGrams {
         PartialGrams[] tasks = new PartialGrams[parallel];
         Thread[] threads = new Thread[parallel];
         HashMap<String,Integer> res;
-        System.out.println("BROJ CHUNKOVA: "+chunks.size()+" A BROJ PROCESORA: "+parallel);
+        //System.out.println("BROJ CHUNKOVA: "+chunks.size()+" A BROJ PROCESORA: "+parallel);
         for (int i=0; i<parallel; i++){
             tasks[i] = new PartialGrams(chunks.get(i),n);
             threads[i] = new Thread(tasks[i]);
@@ -85,14 +85,17 @@ public class ParallelNGrams {
     public static void main(String[] args) throws IOException {
         //String str1 = String.valueOf(NGram.fileToString("10MB.txt"));
         //String str =  (str1.toLowerCase(Locale.ROOT)).replaceAll("\\p{Punct}","");
-        System.out.println("Insert n-gram for which you want to check the frequency: ");
-        String B = sc.nextLine();
-        System.out.println("Insert character for which you want to check frequency of \"" + B + "\" coming after it:");
-        char A = sc.next().charAt(0);
-        int n = B.split(" ").length;
-
+        //System.out.println("Insert n-gram for which you want to check the frequency: ");
+        //String B = sc.nextLine();
+        //System.out.println("Insert character for which you want to check frequency of \"" + B + "\" coming after it:");
+        //char A = sc.next().charAt(0);
+        //int n = B.split(" ").length;
+        int n = 4;
+        String B = "Lorem ipsum dolor sit";
+        //String B = "lorem ipsum";
+        char A = 'L';
         long startTimePar = System.currentTimeMillis();
-        ArrayList<String> str = (ArrayList<String>) NGram.fileToString("10MB.txt");
+        ArrayList<String> str = (ArrayList<String>) NGram.fileToString("100MB.txt");
 
 
         int cores = Runtime.getRuntime().availableProcessors();

@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/NGramsDrugiPokusaj.iml" filepath="$PROJECT_DIR$/NGramsDrugiPokusaj.iml" />
+      <module fileurl="file://$PROJECT_DIR$/NGramsProject.iml" filepath="$PROJECT_DIR$/NGramsProject.iml" />
     </modules>
   </component>
 </project>

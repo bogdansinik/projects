@@ -90,7 +90,7 @@ public static HashMap<String,Integer> ngrams(int n, ArrayList<String> str){
     public static ArrayList<String> fileToString(String title) throws IOException {
 
         ArrayList<String> everything = (ArrayList<String>) Files.readAllLines(Path.of(title));
-        System.out.println(everything.size());
+        //System.out.println(everything.size());
 //        try (BufferedReader br = new BufferedReader(new FileReader(title))) {
 //            StringBuilder sb = new StringBuilder();
 //            String line = br.readLine();
@@ -142,13 +142,17 @@ public static HashMap<String,Integer> ngrams(int n, ArrayList<String> str){
 
     public static void main(String[] args) throws Exception {
 
-        System.out.println("Insert n-gram for which you want to check the frequency: ");
-        String B = sc.nextLine();
-        System.out.println("Insert character for which you want to check frequency of \""+B+ "\" coming after it:");
-        char A = sc.next().charAt(0);
-        int n = B.split(" ").length;
+        //System.out.println("Insert n-gram for which you want to check the frequency: ");
+        //String B = sc.nextLine();
+        //System.out.println("Insert character for which you want to check frequency of \""+B+ "\" coming after it:");
+        //char A = sc.next().charAt(0);
+        //int n = B.split(" ").length;
+        int n = 4;
+        String B = "Lorem ipsum dolor sit";
+        //String B = "lorem ipsum";
+        char A = 'L';
         long startTimeSeq = System.currentTimeMillis();
-        ArrayList<String> str = fileToString("10MB.txt");
+        ArrayList<String> str = fileToString("100MB.txt");
         text = ngrams(n,str);
         //printMap(sortByValue(text));
         System.out.println("The real chance of having \""+B+"\" after '"+A+ "' is: " +frequency(text, B, A)+"%");
